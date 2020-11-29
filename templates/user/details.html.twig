@@ -5,11 +5,12 @@
 {% block body %}
 <section class="row my-4 mb-3">
     <div class="col-3">
-        <img class="img-fluid" src="{{ user.avatar ? asset(user.avatar) : 'http://placehold.it/300x300' }}" alt="Avatar">
+        <img class="img-fluid" src="{{ user.avatar ? vich_uploader_asset(user, 'avatarFile') : 'http://placehold.it/300x300' }}" alt="Avatar">
     </div>
     <div class="col-9">
         <h2>{{ user.firstname }} {{ user.lastname }}</h2>
         <p>Inscrit le {{ user.dateInscription | date('d/m/Y') }}</p>
+        <p>{{ user.description }}</p>
     </div>
 </section>
 <section>

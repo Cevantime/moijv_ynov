@@ -20,6 +20,7 @@ class GameFixtures extends Fixture implements DependentFixtureInterface
             $game->setDateAdd($faker->dateTimeBetween('-2 years', 'now'));
             $game->setDescription($faker->text(300));
             $game->setUser($this->getReference('user'.random_int(0, UserFixtures::USER_COUNT - 1)));
+            $game->setCategory($this->getReference('category'.random_int(0, CategoryFixtures::CATEGORY_COUNT - 1)));
             $manager->persist($game);
         }
 
@@ -29,7 +30,8 @@ class GameFixtures extends Fixture implements DependentFixtureInterface
     public function getDependencies()
     {
         return [
-            UserFixtures::class
+            UserFixtures::class,
+            CategoryFixtures::class
         ];
     }
 }

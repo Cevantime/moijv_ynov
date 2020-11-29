@@ -33,8 +33,10 @@
                 {{ menu_link('home', 'Accueil') }}
                 {% if app.user %}
                     {{ menu_link('profile', 'Profil') }}
+                    {{ menu_link('logout', 'Déconnexion') }}
                 {% else %}
                     {{ menu_link('login', 'Connexion') }}
+                    {{ menu_link('app_register', 'Inscription') }}
                 {% endif %}
             </ul>
         </div>
@@ -50,9 +52,11 @@
 
             <h1 class="my-4">MoiJV</h1>
             <div class="list-group">
-                <a href="#" class="list-group-item">Category 1</a>
-                <a href="#" class="list-group-item">Category 2</a>
-                <a href="#" class="list-group-item">Category 3</a>
+                {% for category in categories.findAll() %}
+                    <a href="{{ path('games_by_category', { slug: category.slug }) }}" class="list-group-item">
+                        {{ category.name }}
+                    </a>
+                {% endfor %}
             </div>
 
         </div>

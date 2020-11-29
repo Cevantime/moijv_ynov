@@ -32,6 +32,7 @@ class UserFixtures extends Fixture
             $user->setLastname($faker->lastName);
             $user->setDateInscription(new \DateTime());
             $user->setPassword($password);
+            $user->setDescription($faker->text);
             $this->addReference('user'.$i, $user);
             $manager->persist($user);
         }
