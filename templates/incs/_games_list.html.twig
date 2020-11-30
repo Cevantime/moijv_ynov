@@ -1,0 +1,24 @@
+<div class="row">
+    {# foreach($games as $game) #}
+    {% for game in games %}
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+                <a href="{{ path('game_details', { id: game.id }) }}"><img class="card-img-top" src="{{ game.image|default('http://placehold.it/700x400') }}" alt=""></a>
+                <div class="card-body">
+                    <h4 class="card-title">
+                        <a href="{{ path('game_details', { id: game.id }) }}">{{ game.name }}</a>
+                    </h4>
+                    <h5>$24.99</h5>
+                    <p class="card-text">{{ game.description }}</p>
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">&#9733; &#9733; &#9733; &#9733; &#9734;</small>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+</div>
+
+{{ knp_pagination_render(games) }}
+<!-- /.row -->

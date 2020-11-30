@@ -25,6 +25,15 @@ class UserFixtures extends Fixture
 
         $password = $this->userPasswordEncoder->encodePassword(new User(), 'user');
 
+        $admin = new User();
+        $admin->setEmail('admin@mail.com');
+        $admin->setFirstname('Super');
+        $admin->setLastname('Administrateur');
+        $admin->setDateInscription(new \DateTime());
+        $admin->setPassword($this->userPasswordEncoder->encodePassword($admin, 'admin'));
+        $admin->setRoles(['ROLE_ADMIN']);
+        $manager->persist($admin);
+
         for($i = 0; $i < self::USER_COUNT; $i++) {
             $user = new User();
             $user->setEmail($faker->email);
@@ -32,6 +41,7 @@ class UserFixtures extends Fixture
             $user->setLastname($faker->lastName);
             $user->setDateInscription(new \DateTime());
             $user->setPassword($password);
+            $user->setDescription($faker->text);
             $this->addReference('user'.$i, $user);
             $manager->persist($user);
         }
