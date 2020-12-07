@@ -3,6 +3,7 @@
 {% block title %}{{ parent() }} Profil{% endblock %}
 
 {% block body %}
+    {% set is_current_user = app.user == user %}
 <section class="row my-4 mb-3">
     <div class="col-3">
         <img class="img-fluid" src="{{ user.avatar ? vich_uploader_asset(user, 'avatarFile') : 'http://placehold.it/300x300' }}" alt="Avatar">
@@ -11,12 +12,24 @@
         <h2>{{ user.firstname }} {{ user.lastname }}</h2>
         <p>Inscrit le {{ user.dateInscription | date('d/m/Y') }}</p>
         {% if user.description %}<p>{{ user.description }}</p>{% endif %}
+        {% if is_current_user %}
+            <div class="btn-group">
+                <a class="btn btn-outline-primary" href="{{ path('profile_update') }}">Modifier mon profil</a>
+                <a class="btn btn-outline-primary" href="{{ path('profile_update_password') }}">Modifier mon mot de passe</a>
+            </div>
+        {% endif %}
     </div>
 </section>
 <section>
+    <h3>Les jeux de {{ user.firstname }}</h3>
     <ul>
         {% for game in user.games %}
-            <li><a href="{{ path('game_details', { id: game.id }) }}">{{ game.name }}</a></li>
+            <li>
+                <a href="{{ path('game_details', { id: game.id }) }}">{{ game.name }}</a>
+                {% if is_current_user %}
+                    <a href="{{ path('game_edit', { id: game.id }) }}" class="btn btn-info">Modifier le jeu</a>
+                {% endif %}
+            </li>
         {% endfor %}
     </ul>
 </section>

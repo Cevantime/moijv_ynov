@@ -2,18 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\CategoryRepository;
+use App\Repository\TagRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
- * @ORM\Entity(repositoryClass=CategoryRepository::class)
- * @UniqueEntity(fields={"slug"})
- * @UniqueEntity(fields={"name"})
+ * @ORM\Entity(repositoryClass=TagRepository::class)
  */
-class Category
+class Tag
 {
     /**
      * @ORM\Id
@@ -23,17 +20,17 @@ class Category
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=30)
+     * @ORM\Column(type="string", length=60)
      */
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=60, unique=true)
+     * @ORM\Column(type="string", length=120, unique=true)
      */
     private $slug;
 
     /**
-     * @ORM\OneToMany(targetEntity=Game::class, mappedBy="category")
+     * @ORM\ManyToMany(targetEntity=Game::class, inversedBy="tags")
      */
     private $games;
 
@@ -83,7 +80,6 @@ class Category
     {
         if (!$this->games->contains($game)) {
             $this->games[] = $game;
-            $game->setCategory($this);
         }
 
         return $this;
@@ -91,12 +87,7 @@ class Category
 
     public function removeGame(Game $game): self
     {
-        if ($this->games->removeElement($game)) {
-            // set the owning side to null (unless already changed)
-            if ($game->getCategory() === $this) {
-                $game->setCategory(null);
-            }
-        }
+        $this->games->removeElement($game);
 
         return $this;
     }

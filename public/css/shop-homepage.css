@@ -6,3 +6,8 @@
 body {
   padding-top: 56px;
 }
+
+.vich-image img {
+  display: inline-block;
+  max-width: 300px;
+}

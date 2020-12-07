@@ -8,9 +8,11 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Validator\Test;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Entity(repositoryClass=GameRepository::class)
+ * @Vich\Uploadable()
  */
 class Game
 {
@@ -29,7 +31,6 @@ class Game
 
     /**
      * @ORM\Column(type="text", nullable=true)
-     * @Test()
      */
     private $description;
 
@@ -44,8 +45,15 @@ class Game
      */
     private $image;
 
+
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="games")
+     * @Vich\UploadableField(mapping="game_image", fileNameProperty="image")
+     * @Assert\Image(mimeTypes={"image/png", "image/jpeg"}, maxSize="2M")
+     */
+    private $imageFile;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="games", fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
@@ -61,9 +69,20 @@ class Game
      */
     private $comments;
 
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $updatedAt;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Tag::class, mappedBy="games", fetch="EAGER")
+     */
+    private $tags;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
+        $this->tags = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -168,6 +187,68 @@ class Game
             if ($comment->getGame() === $this) {
                 $comment->setGame(null);
             }
+        }
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getImageFile()
+    {
+        return $this->imageFile;
+    }
+
+    /**
+     * @param mixed $imageFile
+     * @return Game
+     */
+    public function setImageFile($imageFile)
+    {
+        $this->imageFile = $imageFile;
+
+        if($imageFile != null) {
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Tag[]
+     */
+    public function getTags(): Collection
+    {
+        return $this->tags;
+    }
+
+    public function addTag(Tag $tag): self
+    {
+        if (!$this->tags->contains($tag)) {
+            $this->tags[] = $tag;
+            $tag->addGame($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTag(Tag $tag): self
+    {
+        if ($this->tags->removeElement($tag)) {
+            $tag->removeGame($this);
         }
 
         return $this;

@@ -192,6 +192,9 @@
     "symfony/event-dispatcher-contracts": {
         "version": "v2.2.0"
     },
+    "symfony/expression-language": {
+        "version": "v5.1.9"
+    },
     "symfony/filesystem": {
         "version": "v5.1.8"
     },
@@ -423,6 +426,9 @@
     },
     "symfony/yaml": {
         "version": "v5.1.8"
+    },
+    "tetranz/select2entity-bundle": {
+        "version": "v3.1.0"
     },
     "twig/extra-bundle": {
         "version": "v3.1.1"

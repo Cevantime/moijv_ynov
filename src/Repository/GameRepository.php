@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Category;
 use App\Entity\Game;
+use App\Entity\Tag;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\PaginatorInterface;
@@ -26,6 +27,10 @@ class GameRepository extends ServiceEntityRepository
         // SELECT g.* FROM App\Entity\Game as g ORDER BY g.date_add DESC
         $query = $this->createQueryBuilder('g') // SELECT game as g
             ->orderBy('g.date_add', 'DESC') // ORDER BY g.date_add DESC
+            ->join('g.tags', 't')
+            ->addSelect('t')
+            ->join('g.user', 'u')
+            ->addSelect('u')
             ->getQuery();
 
         return $paginator->paginate($query, $page, 9);
@@ -36,7 +41,27 @@ class GameRepository extends ServiceEntityRepository
         // SELECT g.* FROM App\Entity\Game as g WHERE g.category = :category ORDER BY g.date_add DESC
         $query = $this->createQueryBuilder('g') // SELECT game as g
             ->where('g.category = :category')
+            ->join('g.tags', 't')
+            ->addSelect('t')
+            ->join('g.user', 'u')
+            ->addSelect('u')
             ->setParameter('category', $category)
+            ->orderBy('g.date_add', 'DESC') // ORDER BY g.date_add DESC
+            ->getQuery();
+
+        return $paginator->paginate($query, $page, 9);
+    }
+
+    public function getLatestPaginatedGamesByTag(Tag $tag, PaginatorInterface $paginator, $page = 1)
+    {
+        // SELECT g.* FROM App\Entity\Game as g WHERE g.category = :category ORDER BY g.date_add DESC
+        $query = $this->createQueryBuilder('g') // SELECT game as g
+            ->where(':tag MEMBER OF g.tags')
+            ->join('g.tags', 't')
+            ->addSelect('t')
+            ->setParameter('tag', $tag)
+            ->join('g.user', 'u')
+            ->addSelect('u')
             ->orderBy('g.date_add', 'DESC') // ORDER BY g.date_add DESC
             ->getQuery();
 

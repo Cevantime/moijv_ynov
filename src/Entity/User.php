@@ -16,7 +16,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
  * @Vich\Uploadable()
  */
-class User implements UserInterface
+class User implements UserInterface, \Serializable
 {
     /**
      * @ORM\Id
@@ -85,6 +85,11 @@ class User implements UserInterface
      * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="author")
      */
     private $comments;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $updatedAt;
 
     public function __construct()
     {
@@ -269,6 +274,11 @@ class User implements UserInterface
     public function setAvatarFile($avatarFile)
     {
         $this->avatarFile = $avatarFile;
+
+        if($avatarFile != null) {
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+
         return $this;
     }
 
@@ -298,6 +308,36 @@ class User implements UserInterface
                 $comment->setAuthor(null);
             }
         }
+
+        return $this;
+    }
+
+    public function serialize()
+    {
+        return serialize([
+            'id' => $this->id,
+            'email' => $this->email,
+            'password' => $this->password,
+        ]);
+    }
+
+    public function unserialize($serialized)
+    {
+        list (
+            $this->id,
+            $this->email,
+            $this->password
+        ) = array_values(unserialize($serialized));
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
