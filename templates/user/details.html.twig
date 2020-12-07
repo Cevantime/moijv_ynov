@@ -11,13 +11,25 @@
         <h2>{{ user.firstname }} {{ user.lastname }}</h2>
         <p>Inscrit le {{ user.dateInscription | date('d/m/Y') }}</p>
         {% if user.description %}<p>{{ user.description }}</p>{% endif %}
+        {% if user == app.user %}
+            <div class="btn-group">
+                <a class="btn btn-outline-success" href="{{ path('profile_update') }}">Modifier mon profil</a>
+                <a class="btn btn-outline-success" href="{{ path('profile_update_password') }}">Modifier mon mot de passe</a>
+            </div>
+        {% endif %}
     </div>
 </section>
 <section>
     <ul>
         {% for game in user.games %}
-            <li><a href="{{ path('game_details', { id: game.id }) }}">{{ game.name }}</a></li>
+            <li>
+                <a href="{{ path('game_details', { id: game.id }) }}">{{ game.name }}</a>
+                <a class="btn btn-success" href="{{ path('game_edit', { id: game.id }) }}">Modifier</a>
+            </li>
         {% endfor %}
     </ul>
+    {% if user == app.user %}
+        <a class="btn btn-info" href="{{ path('game_add') }}">Ajouter un jeu</a>
+    {% endif %}
 </section>
 {% endblock %}

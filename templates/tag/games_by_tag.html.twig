@@ -1,0 +1,8 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} Liste des jeux du tag {{ tag.name }}{% endblock %}
+
+{% block body %}
+    <h2 class="my-4">Liste des jeux du tag {{ tag.name }}</h2>
+    {% include 'incs/_games_list.html.twig' %}
+{% endblock %}

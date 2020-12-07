@@ -6,10 +6,21 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{% block title %}{% endblock %}</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     {% block stylesheets %}{% endblock %}
 </head>
 <body>
+<header>
+    <ul>
+        <li><a href="{{ path('admin_dashboard') }}">Dashboard</a></li>
+        <li><a href="{{ path('category_index') }}">Administration des catégories</a></li>
+    </ul>
+</header>
 {% block body %}{% endblock %}
+<script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+<script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 {% block javascripts %}{% endblock %}
 </body>
 </html>

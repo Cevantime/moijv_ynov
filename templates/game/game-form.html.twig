@@ -1,9 +1,31 @@
 {% extends "base.html.twig" %}
 
-{% block title %}{{ parent() }} Ajouter un jeu{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/select2.min.css') }}">
+{% endblock %}
+
+{% block title %}{{ parent() }}
+    {% if game.id %}
+        Modifier le jeu {{ game.name }}
+    {% else %}
+        Ajouter un jeu
+    {% endif %}
+{% endblock %}
 
 {% block body %}
-    <h2>Ajout d'un jeu</h2>
+    <h2>
+        {% if game.id %}
+            Modifier le jeu {{ game.name }}
+        {% else %}
+            Ajouter un jeu
+        {% endif %}
+    </h2>
     {{ form(game_form) }}
 {% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/select2.min.js') }}"></script>
+    <script src="{{ asset('bundles/tetranzselect2entity/js/select2entity.js') }}"></script>
+{% endblock %}
+
 

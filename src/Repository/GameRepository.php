@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Category;
 use App\Entity\Game;
+use App\Entity\Tag;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\PaginatorInterface;
@@ -24,8 +25,7 @@ class GameRepository extends ServiceEntityRepository
     public function getLatestPaginatedGames(PaginatorInterface $paginator, $page = 1)
     {
         // SELECT g.* FROM App\Entity\Game as g ORDER BY g.date_add DESC
-        $query = $this->createQueryBuilder('g') // SELECT game as g
-            ->orderBy('g.date_add', 'DESC') // ORDER BY g.date_add DESC
+        $query = $this->createCommonQueryBuilder() // SELECT game as g
             ->getQuery();
 
         return $paginator->paginate($query, $page, 9);
@@ -34,10 +34,29 @@ class GameRepository extends ServiceEntityRepository
     public function getLatestPaginatedGamesByCategory(Category $category, PaginatorInterface $paginator, $page = 1)
     {
         // SELECT g.* FROM App\Entity\Game as g WHERE g.category = :category ORDER BY g.date_add DESC
-        $query = $this->createQueryBuilder('g') // SELECT game as g
+        $query = $this->createCommonQueryBuilder() // SELECT game as g
             ->where('g.category = :category')
             ->setParameter('category', $category)
+            ->getQuery();
+
+        return $paginator->paginate($query, $page, 9);
+    }
+
+    private function createCommonQueryBuilder()
+    {
+        return $this->createQueryBuilder('g')
             ->orderBy('g.date_add', 'DESC') // ORDER BY g.date_add DESC
+            ->leftJoin('g.user', 'u')
+            ->addSelect('u')
+            ->leftJoin('g.tags', 't')
+            ->addSelect('t');
+    }
+
+    public function getLatestPaginatedGamesByTag(Tag $tag, PaginatorInterface $paginator, int $page)
+    {
+        $query = $this->createCommonQueryBuilder()
+            ->where(':tag MEMBER OF g.tags')
+            ->setParameter('tag', $tag)
             ->getQuery();
 
         return $paginator->paginate($query, $page, 9);
@@ -71,4 +90,5 @@ class GameRepository extends ServiceEntityRepository
         ;
     }
     */
+
 }

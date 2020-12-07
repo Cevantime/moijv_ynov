@@ -8,8 +8,13 @@
                     <h4 class="card-title">
                         <a href="{{ path('game_details', { id: game.id }) }}">{{ game.name }}</a>
                     </h4>
-                    <h5>$24.99</h5>
+                    <h5>par {{ game.user.firstname }} {{ game.user.lastname }}</h5>
                     <p class="card-text">{{ game.description }}</p>
+                    <div>
+                    {% for tag in game.tags %}
+                        <a class="badge badge-info" href="{{ path('games_by_tag', { slug: tag.slug }) }}">#{{ tag.name }}</a>
+                    {% endfor %}
+                    </div>
                 </div>
                 <div class="card-footer">
                     <small class="text-muted">&#9733; &#9733; &#9733; &#9733; &#9734;</small>
