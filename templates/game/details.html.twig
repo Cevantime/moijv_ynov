@@ -6,6 +6,9 @@
     <h1 class="my-4">{{ game.name }}</h1>
     <img width="300" src="{{ game.image ? vich_uploader_asset(game, 'imageFile') : 'http://placehold.it/300x300' }}" alt="">
     <p>{{ game.description }}</p>
+    {% if is_granted('CREATE_LOAN', game) %}
+        <a class="btn btn-outline-success" href="{{ path('create_loan', {id: game.id}) }}">Emprunter</a>
+    {% endif %}
     <a class="btn btn-success" href="{{ path('home') }}">Revenir à la page d'accueil</a>
     <a class="btn btn-info" href="{{ path('user_details', { id : game.user.id }) }}">Voir l'utilisateur du jeu</a>
 {% endblock %}

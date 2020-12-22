@@ -91,10 +91,22 @@ class User implements UserInterface, \Serializable
      */
     private $updatedAt;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Loan::class, mappedBy="user")
+     */
+    private $loans;
+
+    /**
+     * @ORM\OneToMany(targetEntity=LoanMessage::class, mappedBy="author", orphanRemoval=true)
+     */
+    private $yes;
+
     public function __construct()
     {
         $this->games = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->loans = new ArrayCollection();
+        $this->yes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -335,6 +347,66 @@ class User implements UserInterface, \Serializable
     public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Loan[]
+     */
+    public function getLoans(): Collection
+    {
+        return $this->loans;
+    }
+
+    public function addLoan(Loan $loan): self
+    {
+        if (!$this->loans->contains($loan)) {
+            $this->loans[] = $loan;
+            $loan->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLoan(Loan $loan): self
+    {
+        if ($this->loans->removeElement($loan)) {
+            // set the owning side to null (unless already changed)
+            if ($loan->getUser() === $this) {
+                $loan->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|LoanMessage[]
+     */
+    public function getYes(): Collection
+    {
+        return $this->yes;
+    }
+
+    public function addYe(LoanMessage $ye): self
+    {
+        if (!$this->yes->contains($ye)) {
+            $this->yes[] = $ye;
+            $ye->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeYe(LoanMessage $ye): self
+    {
+        if ($this->yes->removeElement($ye)) {
+            // set the owning side to null (unless already changed)
+            if ($ye->getAuthor() === $this) {
+                $ye->setAuthor(null);
+            }
+        }
 
         return $this;
     }

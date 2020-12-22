@@ -5,3 +5,21 @@
         </a>
     </li>
 {% endmacro %}
+
+{% macro loan_label(loan) %}
+    {% set can_post = is_granted('POST_MESSAGE_ON_LOAN', loan) %}
+    {% if can_post %}
+        <a href="{{ path('loan_messages', {id: loan.id}) }}">
+    {% endif %}
+    {{ loan.game.name }}</a>
+    {% if can_post %}
+        </a>
+    {% endif %}
+    {% if loan.isAccepted %}
+        <span class="badge badge-success">Acceptée</span>
+    {% elseif loan.isRefused%}
+        <span class="badge badge-danger">Refusée</span>
+    {% else %}
+        <span class="badge badge-light">En attente</span>
+    {% endif %}
+{% endmacro %}

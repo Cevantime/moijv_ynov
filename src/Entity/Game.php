@@ -77,10 +77,16 @@ class Game
      */
     private $tags;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Loan::class, mappedBy="game", orphanRemoval=true)
+     */
+    private $loans;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
         $this->tags = new ArrayCollection();
+        $this->loans = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -247,6 +253,36 @@ class Game
     {
         if ($this->tags->removeElement($tag)) {
             $tag->removeGame($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Loan[]
+     */
+    public function getLoans(): Collection
+    {
+        return $this->loans;
+    }
+
+    public function addLoan(Loan $loan): self
+    {
+        if (!$this->loans->contains($loan)) {
+            $this->loans[] = $loan;
+            $loan->setGame($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLoan(Loan $loan): self
+    {
+        if ($this->loans->removeElement($loan)) {
+            // set the owning side to null (unless already changed)
+            if ($loan->getGame() === $this) {
+                $loan->setGame(null);
+            }
         }
 
         return $this;

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\ChangePasswordFormType;
 use App\Form\ProfileFormType;
+use App\Repository\LoanRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,16 +20,23 @@ class UserController extends AbstractController
      * @Route("/profile", name="profile")
      * @Route("/user/{id}", name="user_details")
      */
-    public function details(User $user = null): Response
+    public function details(LoanRepository $loanRepository, User $user = null): Response
     {
+        if($user && $user === $this->getUser()) {
+            return $this->redirectToRoute('profile');
+        }
+
         $user ??= $this->getUser();
 
         if( ! $user) {
             return $this->redirectToRoute('login');
         }
 
+        $remoteLoans = $loanRepository->findRemoteLoansForOwner($user);
+
         return $this->render('user/details.html.twig', [
-            'user' => $user
+            'user' => $user,
+            'remoteLoans' => $remoteLoans,
         ]);
     }
 

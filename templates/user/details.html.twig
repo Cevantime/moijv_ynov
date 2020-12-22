@@ -1,3 +1,4 @@
+{% from "macros.html.twig" import loan_label %}
 {% extends 'base.html.twig' %}
 
 {% block title %}{{ parent() }} Profil{% endblock %}
@@ -20,6 +21,7 @@
     </div>
 </section>
 <section>
+    <h2>Mes jeux</h2>
     <ul>
         {% for game in user.games %}
             <li>
@@ -32,4 +34,47 @@
         <a class="btn btn-info" href="{{ path('game_add') }}">Ajouter un jeu</a>
     {% endif %}
 </section>
+{% if user == app.user %}
+    <section>
+        <h2>Demandes d'emprunt en cours pour mes jeux</h2>
+        <ul>
+            {% for loan in remoteLoans %}
+                <li>
+                    {{ loan_label(loan) }}
+                    {% if loan.status == constant("App\\Entity\\Loan::STATUS_WAITING") %}
+                        <a class="btn btn-success" href="{{ path('accept_loan', { id: loan.id }) }}">Accepter la demande</a>
+                        <a class="btn btn-danger" href="{{ path('reject_loan', { id: loan.id }) }}">Rejeter la demande</a>
+                    {% elseif loan.dateEnd == null %}
+                        <a class="btn btn-outline-danger" href="{{ path('close_loan', { id: loan.id }) }}">Fermer la demande</a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </section>
+    <section>
+        <h2>Mes emprunts</h2>
+        <ul>
+            {% for loan in user.loans %}
+                <li>
+                    {{ loan_label(loan) }}
+                    {% if is_granted('DELETE_LOAN', loan) %}
+                        <a class="btn btn-danger" href="{{ path('delete_loan', { id: loan.id}) }}">Supprimer l'emprunt</a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    {% else %}
+        <section>
+            <h2>J'y joue en ce moment</h2>
+            <ul>
+                {% for loan in user.loans %}
+                    {% if loan.isAccepted and loan.dateEnd == null %}
+                        <li><a href="{{ path('game_details', {id: loan.game.id}) }}">{{ loan.game.name }}</a></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </section>
+    {% endif %}
 {% endblock %}

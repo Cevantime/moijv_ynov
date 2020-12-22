@@ -1,0 +1,14 @@
+{% set game = loan.game %}
+{% set owner = game.user %}
+{% set loaner = loan.user %}
+<br><br>
+Bonjour {{ owner.firstname }} {{ owner.lastname }},<br><br>
+Une demande d'emprunt a été faite pour votre jeu <em>{{ game.name }}</em> par <a href="{{ url('user_details', { id: loaner.id }) }}">{{ loaner.firstname }} {{ loaner.lastname }}</a>
+<br><br>
+
+Veuillez accéder dès à présent à votre <a href="{{ url("user_details", { id: owner.id }) }}">profil</a> pour valider ou refuser la demande.
+<br><br>
+Si le lien de fonctionne pas correctement, veuillez copier cette URL dans votre navigateur: <br><br>
+{{ url("user_details", { id: owner.id }) }}
+<br><br>
+Toute l'équipe de MoiJV

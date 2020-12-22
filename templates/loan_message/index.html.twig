@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} Échanges à propos de {{ loan.game.name }}{% endblock %}
+
+{% block body %}
+    {% set remote = app.user == loan.user ? loan.game.user : loan.user %}
+    <h2>Mes échanges avec <a href="{{ path('user_details', { id: loan.user.id }) }}">{{ remote.firstname ~ ' ' ~ remote.lastname }}</a></h2>
+    {% if loan.loanMessages.count > 0 %}
+    <div class="loan-messages">
+        {% set previous = null %}
+        {% set previous_class = '' %}
+        {% for message in loan.loanMessages %}
+            {% set class = app.user == message.author ? 'local' : 'remote' %}
+            {% if loop.first %}
+                <div class="loan-messages-group {{ class }}">
+            {% elseif previous_class != class %}
+                <span>publié le {{ previous.date | date('d/m/Y H:i:s') }}</span>
+                </div>
+                <div class="loan-messages-group {{ class }}">
+            {% endif %}
+            <div class="loan-message">
+                {{ message.content }}
+            </div>
+            {% if loop.last %}
+                <span>publié le {{ message.date | date('d/m/Y H:i:s') }}</span>
+                </div>
+            {% endif %}
+            {% set previous = message %}
+            {% set previous_class = class %}
+        {% endfor %}
+    </div>
+    {% endif %}
+    {{ form_start(form_message) }}
+        {{ form_row(form_message.content, {label: 'Message'}) }}
+        <button class="btn btn-success" type="submit">Envoyer</button>
+    {{ form_end(form_message) }}
+{% endblock %}

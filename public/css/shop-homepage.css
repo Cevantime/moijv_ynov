@@ -6,3 +6,42 @@
 body {
   padding-top: 56px;
 }
+
+.loan-message {
+  background-color: lightgray;
+  padding: 1rem;
+  border-radius: 1rem 0 0 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.loan-message:first-of-type {
+  border-top-right-radius: 1rem;
+}
+
+.loan-message:last-of-type {
+  border-bottom-right-radius: 1rem;
+}
+
+.loan-messages-group span {
+  display: block;
+  font-style: italic;
+  font-size: small;
+}
+
+.loan-messages {
+  display: flex;
+  flex-direction: column;
+}
+
+.loan-messages-group.remote {
+  align-self: flex-start;
+}
+
+.loan-messages-group.local {
+  align-self: flex-end;
+}
+
+.loan-messages-group.local .loan-message {
+  background-color: blue;
+  color: white;
+}

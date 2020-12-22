@@ -1,0 +1,13 @@
+{% set game = loan.game %}
+{% set owner = game.user %}
+{% set loaner = loan.user %}
+<br><br>
+Bonjour {{ loaner.firstname }} {{ loaner.lastname }},
+<br><br>
+Vous avez effectué une demande d'emprunt pour le jeu <em>{{ game.name }}</em> à l'utilisateur <a href="{{ url('user_details', { id: loaner.id }) }}">{{ owner.firstname }} {{ owner.lastname }}</a>
+<br><br>
+
+Votre demande est actuellement en attente de validation par le propriétaire du jeu. Nous vous enverrons un mail pour vous notifier de cette validation.
+
+<br><br>
+Toute l'équipe de MoiJV
